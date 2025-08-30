@@ -1,0 +1,61 @@
+//Write a program to convert an Infix expression into a Postfix expression.
+#include <iostream>
+#include<stack>
+using namespace std;
+int prio(char op){
+    if(op=='+'||op=='-')return 1;
+    else return 2;
+}
+string solve (string val1,string val2,char op){
+    string s = "";
+    s+=val1;
+    s+=val2;
+    s.push_back(op);
+    return s;
+}
+int main() {
+    string s = "2+4*6/8-32";
+    stack<string>val;
+    stack<char>op;
+    for(int i = 0;i<s.length();i++){
+        if(s[i]>=48 && s[i]<=57){
+            string num = "";
+            while(i < s.length() && s[i]>=48 && s[i]<=57){
+                num.push_back(s[i]);
+                i++;
+            }
+            i--;               // step back, because for-loop will increment i
+            val.push(num);}
+        else{
+            if(op.size()==0)op.push(s[i]);
+            else if(prio(op.top())<prio(s[i])) op.push(s[i]);
+            else {
+                while(op.size()>0&&prio(s[i])<=prio(op.top())){
+                    string val2 = val.top();
+                    val.pop();
+                    string val1 = val.top();
+                    val.pop();
+                    char ope = op.top();
+                    op.pop();
+                    string ans=solve(val1,val2,ope);
+                    val.push(ans);
+
+
+                }
+                op.push(s[i]);
+            }
+        }
+    }
+    while(op.size()>0){
+                    string val2 = val.top();
+                    val.pop();
+                    string val1 = val.top();
+                    val.pop();
+                    char ope = op.top();
+                    op.pop();
+                    string ans=solve(val1,val2,ope);
+                    val.push(ans);
+    }
+    cout<<val.top()<<endl;
+    
+}
